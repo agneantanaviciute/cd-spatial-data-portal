@@ -52,7 +52,8 @@ mod_landing_ui <- function(id) {
               tags$li("Interactive UMAP & spatial gene expression plots for Xenium 5100-plex, 480-plex and Visium."),
               tags$li("Download links to raw and processed datasets."),
               tags$li("Questions about the data or this app? Email agne.antanaviciute@imm.ox.ac.uk"),
-              tags$li("For more information, see our publication at [PLACEHOLDER URL]")
+              tags$li("For more information, see our publication at [PLACEHOLDER URL]"),
+              tags$li("Code for this app is available at ", tags$a(href = "https://github.com/agneantanaviciute/cd-spatial-data-portal", target = "_blank", "GitHub"),".")
             )
         )
       )

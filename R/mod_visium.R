@@ -97,7 +97,7 @@ mod_visium_server <- function(id) {
           set_status(sprintf("Fetching expression for %s…", input$gene))
           ex <- try(sbvis_fetch_expression(input$image, input$gene), silent = TRUE)
           if (inherits(ex, "try-error") || !is.data.frame(ex)) {
-            ex <- data.frame(cell = character(), value = double())
+            ex <- data.frame(cell_id = character(), value = double())
           }
           r_expr(ex)
           incProgress(1)
@@ -118,7 +118,7 @@ mod_visium_server <- function(id) {
         ex <- r_expr()
         validate(need(!is.null(ex), "Loading gene expression…"))
         if (!is.data.frame(ex) || !all(c("cell_id","value") %in% names(ex))) {
-          ex <- data.frame(cell = character(), value = double())
+          ex <- data.frame(cell_id = character(), value = double())
         }
         dat <- merge(dat, ex[, c("cell_id","value")], by = "cell_id", all.x = TRUE)
         if (!"value" %in% names(dat)) dat$value <- NA_real_
@@ -144,8 +144,8 @@ mod_visium_server <- function(id) {
         req(input$gene)
         ex <- r_expr()
         validate(need(!is.null(ex), "Loading gene expression…"))
-        if (!is.data.frame(ex) || !all(c("cell","value") %in% names(ex))) {
-          ex <- data.frame(cell = character(), value = double())
+        if (!is.data.frame(ex) || !all(c("cell_id","value") %in% names(ex))) {
+          ex <- data.frame(cell_id = character(), value = double())
         }
         dat <- merge(dat, ex[, c("cell_id","value")], by = "cell_id", all.x = TRUE)
         if (!"value" %in% names(dat)) dat$value <- NA_real_

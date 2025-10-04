@@ -72,7 +72,7 @@ mod_xenium5100_server <- function(id) {
     
 
     r_cells <- reactiveVal(NULL)
-    r_expr  <- reactiveVal(data.frame(cell = character(), value = double()))  
+    r_expr  <- reactiveVal(data.frame(cell_id = character(), value = double()))  
     
 
     observeEvent(input$image, {
@@ -91,12 +91,12 @@ mod_xenium5100_server <- function(id) {
       req(input$image)
       if (identical(input$mode, "Gene")) {
         req(input$gene)
-        r_expr(data.frame(cell = character(), value = double()))  
+        r_expr(data.frame(cell_id = character(), value = double()))  
         withProgress(message = sprintf("Loading %s expression…", input$gene), value = 0, {
           set_status(sprintf("Fetching expression for %s…", input$gene))
           ex <- try(sb_fetch_expression(input$image, input$gene), silent = TRUE)
           if (inherits(ex, "try-error") || !is.data.frame(ex)) {
-            ex <- data.frame(cell = character(), value = double())
+            ex <- data.frame(cell_id = character(), value = double())
           }
           r_expr(ex)
           incProgress(1)
@@ -115,7 +115,7 @@ mod_xenium5100_server <- function(id) {
         req(input$gene)
         ex <- r_expr(); validate(need(!is.null(ex), "Loading gene expression…"))
         if (!is.data.frame(ex) || !all(c("cell_id","value") %in% names(ex))) {
-          ex <- data.frame(cell = character(), value = double())
+          ex <- data.frame(cell_id = character(), value = double())
         }
         dat <- merge(dat, ex[, c("cell_id","value")], by = "cell_id", all.x = TRUE)
         if (!"value" %in% names(dat)) dat$value <- NA_real_
@@ -139,7 +139,7 @@ mod_xenium5100_server <- function(id) {
         req(input$gene)
         ex <- r_expr(); validate(need(!is.null(ex), "Loading gene expression…"))
         if (!is.data.frame(ex) || !all(c("cell_id","value") %in% names(ex))) {
-          ex <- data.frame(cell = character(), value = double())
+          ex <- data.frame(cell_id = character(), value = double())
         }
         dat <- merge(dat, ex[, c("cell_id","value")], by = "cell_id", all.x = TRUE)
         if (!"value" %in% names(dat)) dat$value <- NA_real_

@@ -19,6 +19,18 @@ supabase_require <- function() {
 
 sb_verbose <- function(on = TRUE) options(supabase.verbose = isTRUE(on))
 
+
+pg_in <- function(vals) {
+  if (!length(vals)) return("in.()")
+  q <- vapply(vals, function(v) {
+    v <- as.character(v)
+    
+    if (grepl("[^A-Za-z0-9_\\-\\.]", v)) paste0('"', gsub('"', '\\"', v, fixed=TRUE), '"') else v
+  }, character(1))
+  paste0("in.(", paste(q, collapse=","), ")")
+}
+
+
 supabase_request <- function(path = "rest/v1/") {
   cfg <- supabase_require()
   req <- request(cfg$url) |>
@@ -109,14 +121,8 @@ sb_fetch_pages_parallel <- function(path, query = list(), select = "*",
   do.call(rbind, out)
 }
 
-pg_in <- pg_in %||% function(vals) {
-  if (!length(vals)) return("in.()")
-  q <- vapply(vals, function(v) {
-    v <- as.character(v)
-    if (grepl("[^A-Za-z0-9_\\-\\.]", v)) paste0('"', gsub('"', '\\"', v, fixed=TRUE), '"') else v
-  }, character(1))
-  paste0("in.(", paste(q, collapse=","), ")")
-}
+
+
 
 fmt_int <- function(x) formatC(as.integer(x), format = "d", big.mark = ",")
 
